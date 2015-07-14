@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FundDiv">
+	 <!-- 为了返回list 类型而定义的returnMap -->
+    <resultMap type="FundDiv" id="resultListFundDiv">
+        <id column="id" property="id" />
+        <result column="fund_code" property="fundCode" />
+        <result column="div_type" property="divType" />
+        <result column="cash_bt" property="cashBT" />
+        <result column="cash_at" property="cashAT"/>
+        <result column="fund_ratio" property="fundRatio"/>
+        <result column="reg_date" property="regDate"/>
+        <result column="exdiv_date" property="exdivDate"/>
+        <result column="status" property="status"/>
+        <result column="import_time" property="importTime"/>
+    </resultMap>
+	
+	<!-- 查询sql -->
+	<sql id="sql_select">
+		select id,fund_code,div_type,cash_bt,cash_at,fund_ratio,reg_date,exdiv_date,exdiv_date,status,import_time
+	</sql>
+	
+	<!-- 查询条件sql -->
+	<sql id="sql_where">
+		from mncg_fund_div where 1=1
+		<if test="fundCode != null and fundCode !=''">
+			<![CDATA[
+			   AND fund_code = #{fundCode}
+			]]>  
+		</if>
+		<if test="regDateStart != null and regDateStart !='' and regDateEnd != null and regDateEnd != ''">
+			<![CDATA[
+			   AND reg_date BETWEEN #{regDateStart} AND #{regDateEnd}
+			]]>
+		</if>
+		<if test="exdivDateStart != null and exdivDateStart !='' and exdivDateEnd != null and exdivDateEnd != ''">
+			<![CDATA[
+			   AND exdiv_date BETWEEN #{exdivDateStart} AND #{exdivDateEnd}
+			]]>   
+		</if>
+		<if test="divType >= 0 ">
+			<![CDATA[
+			   AND div_type = #{divType}
+			]]>   
+		</if>
+		<if test="status >= 0">
+			<![CDATA[
+			   AND status = #{status}
+			]]>   
+		</if>
+		order by id desc
+		<if test="pageSize > 0 and pageStart == null" >
+			<![CDATA[
+				limit #{pageSize}
+			]]>
+		</if>
+		<if test="pageSize > 0 and pageStart != null" >
+			<![CDATA[
+				limit #{pageStart}, #{pageSize}
+			]]>
+		</if>
+	</sql>
+	
+	<!-- 查询 -->
+	<select id="findFund" parameterType="map" resultMap="resultListFundDiv">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+	</select>
+	
+	<!-- 插入 -->
+	<insert id="insert" parameterType="FundDiv">
+		insert into mncg_fund_div(fund_code,div_type,cash_bt,cash_at,fund_ratio,reg_date,exdiv_date,status,import_time) values (
+			#{fundCode},#{divType},#{cashBT},#{cashAT},#{fundRatio},#{regDate},#{exdivDate},#{status},#{importTime}
+		)
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="FundDiv">
+		update mncg_fund_div set fund_code=#{fundCode},div_type=#{divType},cash_bt=#{cashBT},cash_at=#{cashAT},fund_ratio=#{fundRatio},
+			reg_date=#{regDate},exdiv_date=#{exdivDate},status=#{status},import_time=#{importTime} where id = #{id}
+	</update>
+	<!-- 删除 -->
+	<delete id="delete" parameterType="int">
+		delete from mncg_fund_div where id = #{id}
+	</delete>
+	
+	<!-- 通过ID查询 -->
+	<select id="findById" parameterType="int" resultType="FundDiv">
+		<include refid="sql_select" /> from mncg_fund_div where id = #{id}
+	</select>
+</mapper>

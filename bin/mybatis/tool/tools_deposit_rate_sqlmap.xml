@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DepositRate">
+	<resultMap type="DepositRate" id="depositRateResult">
+		<result property="id" column="id" />
+		<result property="bankCode" column="bank_code" />
+		<result property="bankName" column="bank_name" />
+		<result property="currentDepositRate" column="current_deposit_rate" />
+		<result property="fixedDeposit3month" column="fixed_deposit_3month" />
+		<result property="fixedDeposit6month" column="fixed_deposit_6month" />
+		<result property="fixedDeposit1year" column="fixed_deposit_1year" />
+		<result property="fixedDeposit2year" column="fixed_deposit_2year" />
+		<result property="fixedDeposit3year" column="fixed_deposit_3year" />
+		<result property="fixedDeposit5year" column="fixed_deposit_5year" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="DepositRate">
+		insert into tool_deposit_rate(
+			bank_code,bank_name,current_deposit_rate,fixed_deposit_3month,fixed_deposit_6month,fixed_deposit_1year,fixed_deposit_2year,fixed_deposit_3year,fixed_deposit_5year,update_time
+		)values(
+			#{bankCode},#{bankName},#{currentDepositRate},#{fixedDeposit3month},#{fixedDeposit6month},#{fixedDeposit1year},#{fixedDeposit2year},#{fixedDeposit3year},#{fixedDeposit5year},#{updateTime}
+		)
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@IDENTITY as value
+		</selectKey>
+	</insert>
+
+	<update id="update" parameterType="DepositRate">
+		update tool_deposit_rate set bank_code=#{bankCode},bank_name=#{bankName},current_deposit_rate=#{currentDepositRate},fixed_deposit_3month=#{fixedDeposit3month},fixed_deposit_6month=#{fixedDeposit6month},fixed_deposit_1year=#{fixedDeposit1year},fixed_deposit_2year=#{fixedDeposit2year},fixed_deposit_3year=#{fixedDeposit3year},fixed_deposit_5year=#{fixedDeposit5year},update_time=#{updateTime} where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="DepositRate">
+		delete from tool_deposit_rate where id = #{id}
+	</delete>
+	
+	<select id="select" resultMap="depositRateResult" parameterType="int">
+		select id,bank_code,bank_name,current_deposit_rate,fixed_deposit_3month,fixed_deposit_6month,fixed_deposit_1year,fixed_deposit_2year,fixed_deposit_3year,fixed_deposit_5year,update_time from tool_deposit_rate where id = #{id}
+	</select>
+	
+	<select id="select_all" resultMap="depositRateResult">
+		select id,bank_code,bank_name,current_deposit_rate,fixed_deposit_3month,fixed_deposit_6month,fixed_deposit_1year,fixed_deposit_2year,fixed_deposit_3year,fixed_deposit_5year,update_time from tool_deposit_rate
+	</select>
+	
+	<sql id="sql_count">
+		select count(1)
+	</sql>
+	
+	<sql id="sql_select">
+		select id,bank_code,bank_name,current_deposit_rate,fixed_deposit_3month,fixed_deposit_6month,fixed_deposit_1year,fixed_deposit_2year,fixed_deposit_3year,fixed_deposit_5year,update_time
+	</sql>
+	
+	<sql id="sql_where">
+		from tool_deposit_rate
+		<trim prefix="where" prefixOverrides="AND|OR">
+			<if test="bankCode != null and bankCode != ''">
+				AND bank_code = #{bankCode}
+			</if>
+			<if test="bankName != null and bankName != ''">
+				AND bank_name = #{bankName}
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="sql_order">
+		<if test="cols != null and cols != ''">
+			order by ${cols}
+		</if>
+	</sql>
+
+	<select id="findByParams_count" parameterType="java.util.HashMap" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	</select>
+	
+	<select id="findByParams" parameterType="java.util.HashMap" resultMap="depositRateResult">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+		<include refid="sql_order" />
+	</select>
+</mapper>

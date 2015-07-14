@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Allocate">
+
+	<!-- 查询非交易日集合  -->
+	<select id="getNextAllocate" resultType="Allocate">
+		select id,type,status,cdkey,ctime,utime,openid from gift_allocate   where status = 0 and ctime  =  current_date()  ORDER BY id limit 1
+	</select>
+	
+	
+	<update id="updateStatus" parameterType="map">
+		update gift_allocate set status = 1,openid=#{openid} where id = #{id}
+	</update>
+</mapper>

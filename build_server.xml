@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="asteroidRpcServer" default="release">
+	<property name="project.name" value="asteroidRpcServer" />
+	<property name="src" location="src" />
+	<property name="resource" location="${src}/resource" />       
+	<property name="classpath" location="build/classes" />     
+	<property name="dist" location="dist" />
+	<property name="AsteroidRpcServer_lib" location="dist/AsteroidRpcServer_lib" />
+	<property name="release" location="release" />
+	
+	<pathconvert property="lib" pathsep=" ">
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*" to="AsteroidRpcServer_lib/*" />
+			</chainedmapper>
+		</mapper>
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</pathconvert>
+	
+	<property name="libs" value="${lib}" />
+	
+	<target name="init">
+		<delete dir="${dist}"/>
+		<delete dir="${classpath}" />
+	    <mkdir dir="${classpath}" />     
+	    <mkdir dir="${dist}" />  
+	</target>
+	
+	<target name="compile" depends="init" >
+		<javac srcdir="${src}/java" includes="com/youguu/asteroid/rpc/server/**,com/youguu/asteroid/**/dao/**,com/youguu/asteroid/**/service/**,
+			com/youguu/asteroid/windvane/mq/MqSenderImpl.java" 
+		    	destdir="${classpath}" encoding="UTF-8" verbose="on" includeantruntime="off" >
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>    
+	</target>
+	
+	<target name="jar" depends="compile">
+		<jar destfile="${dist}/${project.name}.jar" update="true" basedir="${classpath}">
+			<fileset dir="${src}/resource" >     
+			    <include name="mybatis/**/*.xml" />     
+			</fileset>
+			<fileset dir="${src}/resource" >     
+				<include name="spring/asteroid_applicationContext.xml" /> 
+			</fileset>
+			<manifest>     
+				<attribute name="Class-Path" value=". ${libs}"/>
+				<attribute name="Main-Class" value="com.youguu.asteroid.rpc.server.BootStrap" />  
+			</manifest>    
+		</jar>
+	</target>
+	
+	<target name="dist" depends="jar">
+		<mkdir dir="${dist}/AsteroidRpcServer_lib"/>
+		<copydir dest="${dist}/AsteroidRpcServer_lib" src="lib"></copydir>
+		
+		<mkdir dir="${dist}/properties"/>
+		
+		<copy file="${resource}/properties/asteroid_rpc_server.properties" tofile="${dist}/properties/asteroid_rpc_server.properties"/>
+		<copy file="${resource}/properties/log4j.properties" tofile="${dist}/properties/log4j.properties"/>
+		<copy file="${resource}/properties/redis.properties" tofile="${dist}/properties/redis.properties"/>
+		<copy file="${resource}/properties/asteroid_config-db.properties" tofile="${dist}/properties/asteroid_config-db.properties"/>
+		<copy file="${resource}/properties/ast_assist_config-db.properties" tofile="${dist}/properties/ast_assist_config-db.properties"/>
+		<copy file="${resource}/properties/rule_config-db.properties" tofile="${dist}/properties/rule_config-db.properties"/>
+		<copy file="${resource}/properties/poolConfig.properties" tofile="${dist}/properties/poolConfig.properties"/>
+		<copy file="${resource}/properties/mq.properties" tofile="${dist}/properties/mq.properties"/>
+		<copy file="${resource}/properties/wxgift_config-db.properties" tofile="${dist}/properties/wxgift_config-db.properties"/>
+		<copy file="${resource}/properties/jetty_server.properties" tofile="${dist}/properties/jetty_server.properties"/>
+		<copy file="${resource}/properties/opstat_config-db.properties" tofile="${dist}/properties/opstat_config-db.properties"/>
+		<copy file="${resource}/properties/activity_data_info.properties" tofile="${dist}/properties/activity_data_info.properties"/>
+		<copy file="${resource}/properties/mncgstat_config-db.properties" tofile="${dist}/properties/mncgstat_config-db.properties"/>
+		<copy file="${resource}/properties/wapUrlPath.properties" tofile="${dist}/properties/wapUrlPath.properties"/>
+		<copy file="${resource}/properties/bank_config-db.properties" tofile="${dist}/properties/bank_config-db.properties"/>
+		<copy file="${resource}/properties/fund_config-db.properties" tofile="${dist}/properties/fund_config-db.properties"/>
+		<copy file="${resource}/properties/func_config.properties" tofile="${dist}/properties/func_config.properties"/>
+	</target>
+	
+	<target name="release" depends="dist">
+	    <delete dir="${release}"/>
+	    <mkdir dir="${release}"/>
+        <tar destfile="${release}/${project.name}.tar" basedir="dist"/>
+        <gzip src="${release}/${project.name}.tar" zipfile="${release}/${project.name}.tar.gz"/>
+    </target>
+</project>
+

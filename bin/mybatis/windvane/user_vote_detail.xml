@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserVoteDetail">
+	<insert id="insert" parameterType="UserVoteDetail">
+		insert into windvane_user_vote_detail(
+			uid,ctime,date,type
+		)values(
+			#{uid},#{ctime},#{date},#{type}
+		)
+	</insert>
+	
+	<update id="update" parameterType="UserVoteDetail">
+		update windvane_user_vote_detail 
+		set 
+		uid = #{uid},ctime = #{ctime},date = #{date},type = #{type}
+		where  uid = #{uid} and date = #{date}
+	</update>
+	
+	<delete id="delete" parameterType="map">
+		delete from windvane_user_vote_detail 
+		where uid = #{uid} and date = #{date}
+	</delete>
+	
+	<delete id="truncateAll" parameterType="String">
+		delete from windvane_user_vote_detail where date = #{date}
+	</delete>
+	
+	<select id="selectUserVoteDetail" parameterType="map" resultType="UserVoteDetail">
+		select uid,ctime,date,type from windvane_user_vote_detail where uid = #{uid} and date = #{date}
+	</select>
+	
+	<select id="findAllUserVoteDetail" parameterType="String" resultType="UserVoteDetail">
+		select uid,ctime,date,type from windvane_user_vote_detail where  date = #{date} order by uid 
+	</select>
+	
+</mapper>

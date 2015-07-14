@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="logPrefix" value="database.mncg_rule" />
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	<typeAliases>
+	    <typeAlias alias="FundConvert" type="com.youguu.asteroid.fund.pojo.FundConvert" />
+	     <typeAlias alias="FundDiv" type="com.youguu.asteroid.fund.pojo.FundDiv" />
+	</typeAliases>
+
+	<mappers>
+	  <mapper resource="mybatis/fund/fund_div_mapper.xml" />
+	   <mapper resource="mybatis/fund/fund_convert_mapper.xml" />
+	</mappers>
+	
+</configuration>

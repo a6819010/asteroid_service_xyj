@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="logPrefix" value="database.mncg_rule" />
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	<typeAliases>
+	    <typeAlias alias="Allocate" type="com.youguu.asteroid.wxgift.pojo.Allocate" />
+	    <typeAlias alias="Openlog" type="com.youguu.asteroid.wxgift.pojo.Openlog" />
+	    <typeAlias alias="UserInfo" type="com.youguu.asteroid.wxgift.pojo.UserInfo" />
+	</typeAliases>
+
+	<mappers>
+	  <mapper resource="mybatis/wxgift/wxgift_Allocate_mapper.xml" />
+	  <mapper resource="mybatis/wxgift/wxgift_Openlog_mapper.xml" />
+	  <mapper resource="mybatis/wxgift/wxgift_UserInfo_mapper.xml" />
+	</mappers>
+	
+</configuration>

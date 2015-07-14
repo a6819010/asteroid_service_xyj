@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LendingRate">
+	<resultMap type="LendingRate" id="lendingRateResult">
+		<result property="id" column="id" />
+		<result property="bankCode" column="bank_code" />
+		<result property="bankName" column="bank_name" />
+		<result property="month6Below" column="month6_below" />
+		<result property="month6ToYear1" column="month6_to_year1" />
+		<result property="year1ToYear3" column="year1_to_year3" />
+		<result property="year3ToYear5" column="year3_to_year5" />
+		<result property="year5Below" column="year5_below" />
+		<result property="year5Above" column="year5_above" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="LendingRate">
+		insert into tool_lending_rate(
+			bank_code,bank_name,month6_below,month6_to_year1,year1_to_year3,year3_to_year5,year5_below,year5_above,update_time
+		)values(
+			#{bankCode},#{bankName},#{month6Below},#{month6ToYear1},#{year1ToYear3},#{year3ToYear5},#{year5Below},#{year5Above},#{updateTime}
+		)
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@IDENTITY as value
+		</selectKey>
+	</insert>
+
+	<update id="update" parameterType="LendingRate">
+		update tool_lending_rate set bank_code=#{bankCode},bank_name=#{bankName},month6_below=#{month6Below},month6_to_year1=#{month6ToYear1},year1_to_year3=#{year1ToYear3},year3_to_year5=#{year3ToYear5},year5_below=#{year5Below},year5_above=#{year5Above},update_time=#{updateTime} where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="LendingRate">
+		delete from tool_lending_rate where id = #{id}
+	</delete>
+	
+	<select id="select" resultMap="lendingRateResult" parameterType="int">
+		select id,bank_code,bank_name,month6_below,month6_to_year1,year1_to_year3,year3_to_year5,year5_below,year5_above,update_time from tool_lending_rate where id = #{id}
+	</select>
+	
+	<select id="select_all" resultMap="lendingRateResult">
+		select id,bank_code,bank_name,month6_below,month6_to_year1,year1_to_year3,year3_to_year5,year5_below,year5_above,update_time from tool_lending_rate
+	</select>
+	
+	<sql id="sql_count">
+		select count(1)
+	</sql>
+	
+	<sql id="sql_select">
+		select id,bank_code,bank_name,month6_below,month6_to_year1,year1_to_year3,year3_to_year5,year5_below,year5_above,update_time
+	</sql>
+	
+	<sql id="sql_where">
+		from tool_lending_rate
+		<trim prefix="where" prefixOverrides="AND|OR">
+			<if test="bankCode != null and bankCode != ''">
+				AND bank_code = #{bankCode}
+			</if>
+			<if test="bankName != null and bankName != ''">
+				AND bank_name = #{bankName}
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="sql_order">
+		<if test="cols != null and cols != ''">
+			order by ${cols}
+		</if>
+	</sql>
+
+	<select id="findByParams_count" parameterType="java.util.HashMap" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	</select>
+	
+	<select id="findByParams" parameterType="java.util.HashMap" resultMap="lendingRateResult">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+		<include refid="sql_order" />
+	</select>
+</mapper>

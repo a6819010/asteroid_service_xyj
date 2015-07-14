@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AdWall">
+
+	<!-- 添加记录 -->
+	<insert id="insert" parameterType="AdWall" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into ad_wall(
+			title,forward_url,begin_date,end_date,ad_image,position_type,content_type,content,create_time,rank
+		)values(
+			#{title},#{forwardUrl},#{beginDate},#{endDate},#{adImage},#{positionType},#{contentType},#{content},#{createTime},#{rank}
+		)
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update" parameterType="AdWall">
+		update ad_wall set title=#{title},forward_url=#{forwardUrl},begin_date=#{beginDate},end_date=#{endDate},ad_image=#{adImage},position_type=#{positionType},content_type=#{contentType},content=#{content},rank=#{rank} where id=#{id}
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="AdWall">
+		delete from ad_wall where id=#{id}
+	</delete>
+
+	<!-- 查询 BY ID -->
+	<select id="select" resultType="AdWall" parameterType="int">
+		select id,title,forward_url as forwardUrl,begin_date as beginDate,end_date as endDate,ad_image as adImage,position_type as positionType,content_type as contentType,content,create_time as createTime,rank from ad_wall where id=#{id}
+	</select>
+
+	<!-- 动态sql -->
+	<sql id="sql_count">
+		select count(1)
+	</sql>
+	<sql id="sql_select">
+		select id,title,forward_url as forwardUrl,begin_date as beginDate,end_date as endDate,ad_image as adImage,position_type as positionType,content_type as contentType,content,create_time as createTime,rank
+	</sql>
+	<sql id="sql_where">
+		from ad_wall
+		<where>
+			<if test="title != null and title !=''">
+			    AND title like concat('%',#{title},'%')
+			</if>
+			<if test="positionType != null and positionType !=''">
+			    AND position_type = #{positionType}
+			</if>
+			<if test="currentDate != null and currentDate !=''">
+			    AND #{currentDate} BETWEEN begin_date AND end_date
+			</if>
+		</where>
+	</sql>
+	<sql id="sql_order">
+		ORDER BY rank asc
+	</sql>
+
+	<select id="findByParams_count" parameterType="java.util.HashMap" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	</select>
+	<select id="findByParams" parameterType="java.util.HashMap" resultType="AdWall">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+		<include refid="sql_order" />
+	</select>
+	
+</mapper>

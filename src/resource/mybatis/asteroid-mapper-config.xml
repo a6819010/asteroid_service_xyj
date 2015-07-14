@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="logPrefix" value="database.opstat" />
+		<setting name="mapUnderscoreToCamelCase" value="false" />
+	</settings>
+	<typeAliases>
+	    <typeAlias alias="SensitiveWord" type="com.youguu.asteroid.word.pojo.SensitiveWord" />
+		<typeAlias alias="BenchmarkRate" type="com.youguu.asteroid.tool.pojo.BenchmarkRate"/>
+		<typeAlias alias="DepositRate" type="com.youguu.asteroid.tool.pojo.DepositRate"/>
+		<typeAlias alias="ForeignCurrency" type="com.youguu.asteroid.tool.pojo.ForeignCurrency"/>
+		<typeAlias alias="SocialInsurance" type="com.youguu.asteroid.tool.pojo.SocialInsurance"/>
+		<typeAlias alias="TaxLevel" type="com.youguu.asteroid.tool.pojo.TaxLevel"/>
+		<typeAlias alias="RateDiscount" type="com.youguu.asteroid.tool.pojo.RateDiscount"/>
+		<typeAlias alias="LendingRate" type="com.youguu.asteroid.tool.pojo.LendingRate"/>
+		<typeAlias alias="TaxBase" type="com.youguu.asteroid.tool.pojo.TaxBase"/>
+		<typeAlias alias="SecAccountAndTrade" type="com.youguu.asteroid.sec.pojo.SecAccountAndTrade"/>
+	    <typeAlias alias="SecAccountRecord" type="com.youguu.asteroid.sec.pojo.SecAccountRecord"/>
+	</typeAliases>
+	
+	<plugins>
+		<plugin interceptor="com.youguu.core.dao.StatementInterceptor" />
+		<plugin interceptor="com.youguu.core.dao.ResultSetInterceptor" />
+	</plugins>	
+	
+	<mappers>
+	<mapper resource="mybatis/sensitive_word_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_benchmark_rate_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_foreign_currency_sqlmap.xml" /> 
+	<mapper resource="mybatis/tool/tools_deposit_rate_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_social_insurance_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_tax_level_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_rate_discount_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_lending_rate_sqlmap.xml" />
+	<mapper resource="mybatis/tool/tools_tax_base_sqlmap.xml" />
+    <mapper resource="mybatis/sec/sec_account_trade_sqlmap.xml" />
+	<mapper resource="mybatis/sec/sec_account_record_sqlmap.xml" />
+	</mappers>
+</configuration>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SocialInsurance">
+	<resultMap type="SocialInsurance" id="socialInsuranceResult">
+		<result property="id" column="id" />
+		<result property="cityCode" column="city_code" />
+		<result property="cityName" column="city_name" />
+		<result property="oldRate" column="old_rate" />
+		<result property="medicalRate" column="medical_rate" />
+		<result property="medicalExt" column="medical_ext" />
+		<result property="workRate" column="work_rate" />
+		<result property="injuryRate" column="injury_rate" />
+		<result property="birthRate" column="birth_rate" />
+		<result property="houseRate" column="house_rate" />
+		<result property="updateTime" column="update_time" />
+		<result property="houseBase" column="house_base" />
+		<result property="socialBase" column="social_base" />
+		<result property="oldUp" column="old_up" />
+		<result property="oldDown" column="old_down" />
+		<result property="medicalUp" column="medical_up" />
+		<result property="medicalDown" column="medical_down" />
+		<result property="workUp" column="work_up" />
+		<result property="workDown" column="work_down" />
+		<result property="injuryUp" column="injury_up" />
+		<result property="injuryDown" column="injury_down" />
+		<result property="birthUp" column="birth_up" />
+		<result property="birthDown" column="birth_down" />
+		<result property="houseUp" column="house_up" />
+		<result property="houseDown" column="house_down" />
+		<result property="socialMax" column="social_max" />
+		
+	</resultMap>
+	
+	<insert id="insert" parameterType="SocialInsurance">
+		insert into tool_social_insurance(
+			city_code,city_name,old_rate,medical_rate,work_rate,injury_rate,birth_rate,house_rate,update_time,house_base,social_base,old_up,old_down,medical_up,medical_down,work_up,work_down,injury_up,injury_down,birth_up,birth_down,house_up,house_down,medical_ext,social_max
+		)values(
+			#{cityCode},#{cityName},#{oldRate},#{medicalRate},#{workRate},#{injuryRate},#{birthRate},#{houseRate},#{updateTime},#{houseBase},#{socialBase},#{oldUp},#{oldDown},#{medicalUp},#{medicalDown},#{workUp},#{workDown},#{injuryUp},#{injuryDown},#{birthUp},#{birthDown},#{houseUp},#{houseDown},#{medicalExt},#{socialMax}
+		)
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@IDENTITY as value
+		</selectKey>
+	</insert>
+
+	<update id="update" parameterType="SocialInsurance">
+		update tool_social_insurance set city_code=#{cityCode},city_name=#{cityName},old_rate=#{oldRate},medical_rate=#{medicalRate},work_rate=#{workRate},injury_rate=#{injuryRate},birth_rate=#{birthRate},house_rate=#{houseRate},update_time=#{updateTime},house_base=#{houseBase},social_base=#{socialBase}
+		,old_up=#{oldUp},old_down=#{oldDown},medical_up=#{medicalUp},medical_down=#{medicalDown},work_up=#{workUp},work_down=#{workDown},injury_up=#{injuryUp},injury_down=#{injuryDown},birth_up=#{birthUp},birth_down=#{birthDown},house_up=#{houseUp},house_down=#{houseDown},medical_ext=#{medicalExt},social_max=#{socialMax} where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="SocialInsurance">
+		delete from tool_social_insurance where id = #{id}
+	</delete>
+	
+	<select id="select" resultMap="socialInsuranceResult" parameterType="int">
+		select id,city_code,city_name,old_rate,medical_rate,work_rate,injury_rate,birth_rate,house_rate,update_time,house_base,social_base,old_up,old_down,medical_up,medical_down,work_up,work_down,injury_up,injury_down,birth_up,birth_down,house_up,house_down,medical_ext,social_max from tool_social_insurance where id = #{id}
+	</select>
+	
+	<select id="select_all" resultMap="socialInsuranceResult">
+		select id,city_code,city_name,old_rate,medical_rate,work_rate,injury_rate,birth_rate,house_rate,update_time,house_base,social_base,old_up,old_down,medical_up,medical_down,work_up,work_down,injury_up,injury_down,birth_up,birth_down,house_up,house_down,medical_ext,social_max from tool_social_insurance
+	</select>
+	
+	<sql id="sql_count">
+		select count(1)
+	</sql>
+	
+	<sql id="sql_select">
+		select id,city_code,city_name,old_rate,medical_rate,work_rate,injury_rate,birth_rate,house_rate,update_time,house_base,social_base,old_up,old_down,medical_up,medical_down,work_up,work_down,injury_up,injury_down,birth_up,birth_down,house_up,house_down,medical_ext,social_max
+	</sql>
+	
+	<sql id="sql_where">
+		from tool_social_insurance
+		<trim prefix="where" prefixOverrides="AND|OR">
+			<if test="cityCode != null and cityCode != ''">
+				AND city_code = #{cityCode}
+			</if>
+			<if test="cityName != null and cityName != ''">
+				AND city_name = #{cityName}
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="sql_order">
+		<if test="cols != null and cols != ''">
+			order by ${cols}
+		</if>
+	</sql>
+
+	<select id="findByParams_count" parameterType="java.util.HashMap" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	</select>
+	
+	<select id="findByParams" parameterType="java.util.HashMap" resultMap="socialInsuranceResult">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+		<include refid="sql_order" />
+	</select>
+</mapper>

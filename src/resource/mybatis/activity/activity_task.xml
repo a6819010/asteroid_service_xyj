@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ActivityTask">
+	
+	<select id="findActivityTask" parameterType="int" resultType="ActivityTask">
+		select id,name,award_num as awardNum,begin_time as beginTime,end_time as endTime,ctime from activity_task where id = #{id}
+	</select>
+	
+</mapper>

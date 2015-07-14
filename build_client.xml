@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="asteroidRpcClient" default="release">
+	<property name="project.name" value="asteroidRpcClient-1.0" />
+	<property name="src" location="src" />
+	<property name="resource" location="${src}/resource" />
+	<property name="classpath" location="build/classes" />
+	<property name="dist" location="dist" />
+	<property name="AsteroidRpcClient_lib" location="dist/AsteroidRpcClient_lib" />
+	<property name="release" location="release" />
+
+	<pathconvert property="lib" pathsep=" ">
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*" to="AsteroidRpcClient_lib/*" />
+			</chainedmapper>
+		</mapper>
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+	</pathconvert>
+
+	<property name="libs" value="${lib}" />
+
+	<target name="init">
+		<delete dir="${dist}" />
+		<delete dir="${classpath}" />
+		<mkdir dir="${classpath}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}/java" 
+			includes="com/youguu/asteroid/rpc/client/**,com/youguu/asteroid/rpc/thrift/gen/**,com/youguu/asteroid/**/pojo/**,com/youguu/asteroid/util/**,
+			com/youguu/asteroid/rpc/common/ClassCast.java,com/youguu/asteroid/rpc/common/Constants.java,com/youguu/asteroid/rpc/common/ClientLoadImpl.java
+			com/youguu/asteroid/tool/service/impl/ForeignEnum.java"
+			destdir="${classpath}" encoding="UTF-8" verbose="on" includeantruntime="off" debug="true" >
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${dist}/${project.name}.jar" update="true" basedir="${classpath}">
+			<manifest>
+				<attribute name="Class-Path" value=". ${libs}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="dist" depends="jar">
+		<mkdir dir="${dist}/AsteroidRpcClient_lib" />
+		<copy file="lib/commons-pool-1.6.jar" tofile="${dist}/AsteroidRpcClient_lib/commons-pool-1.6.jar"/>
+		<copy file="lib/fastjson-1.1.40.jar" tofile="${dist}/AsteroidRpcClient_lib/fastjson-1.1.40.jar"/>
+		<copy file="lib/libthrift-0.9.1.jar" tofile="${dist}/AsteroidRpcClient_lib/libthrift-0.9.1.jar"/>
+		<copy file="lib/log4j-1.2.17.jar" tofile="${dist}/AsteroidRpcClient_lib/log4j-1.2.17.jar"/>
+		<copy file="lib/slf4j-api-1.7.5.jar" tofile="${dist}/AsteroidRpcClient_lib/slf4j-api-1.7.5.jar"/>
+		<copy file="lib/slf4j-log4j12-1.7.5.jar" tofile="${dist}/AsteroidRpcClient_lib/slf4j-log4j12-1.7.5.jar"/>
+		<copy file="lib/youguu.core-2.0.jar" tofile="${dist}/AsteroidRpcClient_lib/youguu.core-2.0.jar"/>
+				
+		<copy file="${resource}/properties/poolConfig.properties" tofile="${dist}/properties/poolConfig.properties"/>
+		<copy file="${resource}/properties/log4j.properties" tofile="${dist}/properties/log4j.properties"/>
+	</target>
+
+	<target name="release" depends="dist">
+		<delete dir="${release}" />
+		<mkdir dir="${release}" />
+		<tar destfile="${release}/${project.name}.tar" basedir="dist" />
+		<gzip src="${release}/${project.name}.tar" zipfile="${release}/${project.name}.tar.gz" />
+	</target>
+
+	<target name="deploy2Test28" depends="compile,jar">
+		<delete dir="E:\backup\hqTest" includes="${jar.name}" />
+		<copy file="${dist}/${jar.name}" todir="E:\backup\hqTest" />
+	</target>
+
+
+	<target name="ftpJar2prd7" depends="compile,jar">
+		<ftp server="219.232.255.7" userid="ftp_admin" password="ftp_admin1234!" remotedir="/sdb/ftpTemp">
+			<fileset dir="dist">
+				<include name="*.jar" />
+			</fileset>
+		</ftp>
+	</target>
+
+</project>
+

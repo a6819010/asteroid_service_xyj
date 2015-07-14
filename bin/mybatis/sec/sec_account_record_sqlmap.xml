@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SecAccountRecord">
+	<resultMap type="SecAccountRecord" id="secAccountRecordResult">
+		<result property="id" column="id" />
+		<result property="phone" column="phone" />
+		<result property="ak" column="ak" />
+		<result property="secNo" column="sec_no" />
+		<result property="createtime" column="createtime" />
+	</resultMap>
+	
+	<insert id="insert" parameterType="SecAccountRecord">
+		insert into sec_account_record(
+			phone,ak,sec_no,createtime
+		)values(
+			#{phone},#{ak},#{secNo},#{createtime}
+		)
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select @@IDENTITY as value
+		</selectKey>
+	</insert>
+	
+	<select id="select" resultMap="secAccountRecordResult" parameterType="int">
+		select id,phone,ak,sec_no,createtime from sec_account_record where id = #{id}
+	</select>
+	
+	<sql id="sql_count">
+		select count(1)
+	</sql>
+	
+	<sql id="sql_select">
+		select id,phone,ak,sec_no,createtime
+	</sql>
+	
+	<sql id="sql_where">
+		from sec_account_record
+		<trim prefix="where" prefixOverrides="AND|OR">
+			<if test="phone != null and phone !=''">
+				AND `phone`  =#{phone}
+			</if>
+			<if test="secNo != null and secNo !=''">
+				AND `sec_no`  =#{secNo}
+			</if>
+			<if test="createtime != null and createtime !=''">
+				AND `createtime`  =#{createtime}
+			</if>
+			</trim>
+	</sql>
+	
+	<sql id="sql_order">
+		<if test="cols != null and cols != ''">
+			order by ${cols}
+		</if>
+	</sql>
+
+	<select id="findByParams_count" parameterType="java.util.HashMap" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	</select>
+	
+	<select id="findByParams" parameterType="java.util.HashMap" resultMap="secAccountRecordResult">
+		<include refid="sql_select" />
+		<include refid="sql_where" />
+		<include refid="sql_order" />
+	</select>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MarketWindVanePollVote">
+
+	<insert id="insert" parameterType="MarketWindVanePollVote">
+		insert into windvane_pollvote(
+			date,num,up,down
+		)values(
+			#{date},#{num},#{up},#{down}
+		)
+	</insert>
+	
+	<update id="update" parameterType="MarketWindVanePollVote">
+		update windvane_pollvote 
+		set 
+		num = num + #{num},up = up + #{up},down =  down + #{down}
+		where  date = #{date}
+	</update>
+	
+	<update id="updateResult" parameterType="map">
+		update windvane_pollvote 
+		set 
+		result = #{result}
+		where  date = #{date}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		delete from windvane_pollvote 
+		where date = #{date}
+	</delete>
+	
+	<select id="select" parameterType="String" resultType="MarketWindVanePollVote">
+		select date,num,up,down,result from windvane_pollvote where date = #{date}
+	</select>
+	
+	<sql id="sql_show">
+	 	select date,num,up,down,result
+	 </sql>
+	
+	<sql id="sql_where"> 
+		from windvane_pollvote
+		<trim prefix="where" prefixOverrides="AND|OR">
+    		<if test="date != null">
+    			AND date = #{date}
+    		</if>
+    	</trim>
+	 </sql> 
+	 
+	 <sql id="sql_count">
+		select count(1)
+	</sql>
+	 
+	  <sql id="sql_order"> 
+	     <if test="cols!=null"> 
+	       ORDER BY ${cols}
+	     </if> 
+	 </sql> 
+	 
+	 <select id="findAllMarketWindVanePollVote_count" parameterType="Map" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	 </select>
+	
+	<select id="findAllMarketWindVanePollVote" parameterType="Map" resultType="MarketWindVanePollVote">
+   		<include refid="sql_show"/>
+   		<include refid="sql_where"/>
+   		<include refid="sql_order"/>
+ 	 </select>
+ 	 
+ 	 <select id="getNDaysWindVane" parameterType="int" resultType="MarketWindVanePollVote">
+ 	 	SELECT date,num,up,down,result FROM windvane_pollvote ORDER BY DATE DESC LIMIT 0,#{daynum} 
+ 	 </select>
+	
+</mapper>

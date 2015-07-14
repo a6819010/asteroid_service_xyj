@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ActivityUser">
+	
+	<insert id="insert" parameterType="ActivityUser">
+		insert into activity_user(broker_id,broker_user_id,task_id) values(#{brokerId},#{brokerUserId},#{taskId})
+	</insert>
+	
+	<insert id="insertList" >
+		insert into activity_user(broker_id,broker_user_id,task_id) 
+		values
+		<foreach collection="list"  item="user" separator=",">
+			(#{user.brokerId},#{user.brokerUserId},#{user.taskId})
+		</foreach>
+	</insert>
+	
+	<select id="findListActivityUser" parameterType="map" resultType="ActivityUser">
+		select broker_id as brokerId,broker_user_id as brokerUserId,task_id as taskId,ctime from activity_user where task_id = #{taskId} and ctime &gt;= #{beginTime} and ctime &lt;= #{endTime}
+	</select>
+	
+	<update id="updateStatus" parameterType="map">
+		update activity_user set task_id = #{taskId} where broker_id = #{brokerId} and broker_user_id = #{brokerUserId}
+	</update>
+	
+	<sql id="sql_show">
+	 	select broker_id as brokerId,broker_user_id as brokerUserId,task_id as taskId,ctime 
+	 </sql>
+	
+	<sql id="sql_where"> 
+		from activity_user where 1=1 
+		<if test="brokerUserId != null and brokerUserId != '' ">
+			and broker_user_id = #{brokerUserId}
+		</if>
+		<if test="taskId != null and taskId != 0 ">
+			and task_id = #{taskId}
+		</if>
+	 </sql> 
+	 
+	 <sql id="sql_count">
+		select count(1)
+	</sql>
+	 
+	  <sql id="sql_order"> 
+	     <if test="cols!=null"> 
+	       ORDER BY ${cols}
+	     </if> 
+	 </sql> 
+	
+	<select id="findAllActivityUser_count" parameterType="Map" resultType="int">
+		<include refid="sql_count" />
+		<include refid="sql_where" />
+	 </select>
+	
+	<select id="findAllActivityUser" parameterType="Map" resultType="ActivityUser">
+   		<include refid="sql_show"/>
+   		<include refid="sql_where"/>
+   		<include refid="sql_order"/>
+ 	 </select>
+	
+</mapper>

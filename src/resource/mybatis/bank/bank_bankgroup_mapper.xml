@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BankGroup">
+
+	<insert id="insertList">
+		insert into bank_group(
+			group_type,bank_id,bank_code
+		)values
+			<foreach collection="list"  item="bankGroup" index="index"  separator=",">
+				(#{bankGroup.groupType},#{bankGroup.bankId},#{bankGroup.bankCode})
+			</foreach>
+	</insert>
+	
+	 <!-- 为了返回list 类型而定义的returnMap  type="Bank" -->
+    <resultMap type="Bank" id="resultListBank">
+        <id column="id" property="id" />
+        <result column="bank_name" property="bankName" />
+        <result column="bank_name_abbr" property="bankNameAbbr" />
+        <result column="bank_logo" property="bankLogo" />
+    </resultMap>
+    
+     <!-- 为了返回list 类型而定义的returnMap  type=BankGroup -->
+    <resultMap type="BankGroup" id="resultListBankGroup">
+        <id column="id" property="id" />
+        <result column="group_type" property="groupType" />
+        <result column="bank_id" property="bankId" />
+        <result column="bank_code" property="bankCode" />
+    </resultMap>
+    
+	<!-- 通过type查询银行信息 -->
+	<select id="findBankByType" resultMap = "resultListBank" parameterType = "string">
+		select bank.id,bank.bank_name,bank.bank_name_abbr,bank.bank_logo from bank , bank_group where bank.id = bank_group.bank_id AND bank_group.group_type = #{type}
+	</select>
+	
+	<!-- 获取所有银行分组信息 -->
+	<select id="findBankGroupList" resultMap = "resultListBankGroup" parameterType = "map">
+		select bank_group.id,bank_group.group_type as groupType,bank_group.bank_id as bankId ,bank_group.bank_code as bankCode from bank_group where 1=1
+			<if test = "groupType >=0">
+				and bank_group.group_type = #{groupType}
+			</if>
+			<if test = "bankCode != '' and bankCode != null">
+				and bank_group.bank_code = #{bankCode}
+			</if>
+	</select>
+	
+	<delete id="deleteById" parameterType="map">
+		delete from bank_group where id = #{id}
+	</delete>
+	
+	<delete id="deleteByBankId" parameterType="map">
+		delete from bank_group where bank_id = #{bankId}
+	</delete>
+	
+	<update id="updateBankGroupById" parameterType="map">
+		update bank_group set group_type = #{bankGroup.groupType},bank_id = #{bankGroup.bankId},bank_code = #{bankGroup.bankCode} where id = #{id}
+	</update>
+	
+	<!-- 通过ID查找银行分组信息  -->
+	<select id="getBankGroupById" resultType="BankGroup" parameterType="map">
+		select bank_group.id,bank_group.group_type as groupType,bank_group.bank_id as bankId,bank_group.bank_code as bankCode from bank_group where bank_group.id = #{id}
+	</select>
+	
+</mapper>

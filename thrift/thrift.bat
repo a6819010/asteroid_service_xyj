@@ -1,0 +1,1 @@
+E:\soft\thrift-0.9.1\bin\thrift-0.9.1  -gen java service.thrift

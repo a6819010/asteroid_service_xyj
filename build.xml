@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="asteroid" default="releasea">
+	<property name="jar.name" value="youguu.asteroid-1.0.jar" />
+	<property name="lib.dir" location="lib" />     
+	<property name="src" location="src" />     
+	<property name="classpath" location="build/classes" />     
+	<property name="dist" location="dist" />
+	<property name="release" location="release" />
+	
+	<!--设定路径-->
+	<path id="project.class.path">     
+		<pathelement path="${classpath}" />     
+		<fileset dir="${lib.dir}">     
+			    <include name="**/*.jar" />     
+		</fileset>     
+	</path>
+	
+	<!--删除class文件&jar文件-->
+	<target name="init">
+		<delete dir="${dist}"/>
+		<delete dir="${classpath}" />
+	    <mkdir dir="${classpath}" />     
+	    <mkdir dir="${dist}" />  
+	</target>
+	
+	<!--执行之前先调用init，然后将文件编译到classpath下，编译时排除*Test文件-->
+	<target name="compile" depends="init" >
+		<javac srcdir="src" destdir="${classpath}" excludes="test/**, java/com/youguu/asteroid/rpc/**"
+		 	encoding="UTF-8" verbose="on" includeantruntime="off" debug="true">
+				<classpath refid="project.class.path" /> 
+		</javac>    
+	</target>
+	
+	<!--执行之前先调用compile，然后将class文件归档到dist目录下-->
+	<target name="jar" depends="compile">     
+	     <jar jarfile="${dist}/${jar.name}" update="true" basedir="${classpath}" > 
+			<fileset dir="${src}/resource" >     
+			    <include name="mybatis/*.xml" />
+				<include name="mybatis/tradeday/*.xml" />
+				<include name="mybatis/windvane/*.xml" />
+			</fileset>   			
+	        <manifest>     
+	            <attribute name="Main-Class" value="-" />  
+	            <attribute name="Class-Path" value=" "/>
+	        </manifest>    
+	     </jar>
+	</target>
+	
+	<!--执行之前先调用jar，然后将指定目录下的文件拷贝到dist文件下-->
+	<target name="dist" depends="jar">
+		<copy todir="${dist}/">
+			<fileset dir="${src}/resource" >     
+			    <include name="mybatis/*.xml" />
+				<include name="mybatis/tradeday/*.xml" />
+				<include name="mybatis/windvane/*.xml" />
+			</fileset>   			
+			<fileset dir="${src}/resource" >     
+			    <include name="properties/" />     
+			</fileset>   			
+		</copy>
+	</target>
+	
+	<!--执行之前先调用dist，然后删除指定文件，再创建指定文件，将dist目录文件打成tar&gz-->
+	<target name="releasea" depends="dist">
+	    <delete dir="${release}"/>
+	    <mkdir dir="${release}"/>
+        <tar destfile="${release}/youguu.asteroid.tar" basedir="dist"/>
+        <gzip src="${release}/youguu.asteroid.tar" zipfile="${release}/youguu.asteroid.tar.gz"/>
+    </target>
+	
+</project>

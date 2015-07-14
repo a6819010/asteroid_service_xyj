@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserInfo">
+	<insert id="insert" parameterType="UserInfo">
+		insert into  gift_userinfo  (openid,num) values (#{openid},#{num});
+	</insert>
+	
+	
+	<!-- 查询非交易日集合  -->
+	<select id="select" resultType="UserInfo" parameterType="string">
+		select openid,type,cdkey,phone,ctime,num,utime from gift_userinfo   where openid = #{openid}
+	</select>
+	
+	<update id="incOpenNum" parameterType="map">
+		update gift_userinfo set num = num + #{num} , utime = #{utime} where openid = #{openid}
+	</update>
+	
+	<update id="updateAllocate" parameterType="map">
+		update gift_userinfo set type = #{type} , cdkey = #{cdkey}, utime = #{utime} where openid = #{openid}
+	</update>
+	
+	<update id="updateUserPhone" parameterType="map">
+		update gift_userinfo set phone = #{phone}, utime = #{utime} where openid = #{openid}
+	</update>
+	
+</mapper>

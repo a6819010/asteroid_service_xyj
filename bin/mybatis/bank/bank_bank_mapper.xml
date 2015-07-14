@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Bank">
+
+	<!-- 通过银行ID查找银行信息  -->
+	<select id="getBankById" resultType="Bank" parameterType="map">
+		select id,bank_name as bankName,bank_name_abbr as bankNameAbbr,bank_logo as bankLogo from bank where id = #{id}
+	</select>
+	
+	 <!-- 为了返回list 类型而定义的returnMap -->
+    <resultMap type="Bank" id="resultListBank">
+        <id column="id" property="id" />
+        <result column="bank_name" property="bankName" />
+        <result column="bank_name_abbr" property="bankNameAbbr" />
+        <result column="bank_logo" property="bankLogo" />
+    </resultMap>
+	
+	<!-- 获取银行信息列表 -->
+	<select id="getBankList" resultMap="resultListBank" parameterType="map">
+		select id,bank_name as bankName,bank_name_abbr as bankNameAbbr,bank_logo as bankLogo from bank
+	</select>
+	
+	<insert id="insert" parameterType="Bank">
+		insert into bank (bank_name,bank_name_abbr,bank_logo) values(#{bankName},#{bankNameAbbr},#{bankLogo});
+	</insert>
+	<delete id="deleteBankById" parameterType="map">
+		delete from bank where id = #{id}
+	</delete>
+	<update id="updateBankById" parameterType="map">
+		update bank set bank_name=#{bank.bankName},bank_name_abbr = #{bank.bankNameAbbr},bank_logo = #{bank.bankLogo} where id = #{id}
+	</update>
+	
+	<select id="getBankListById" resultMap="resultListBank">
+		select id,bank_name as bankName,bank_name_abbr as bankNameAbbr,bank_logo as bankLogo from bank where id in 
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				 #{item}
+			</foreach>
+	</select>
+	
+	<!-- 通过分组类型和分组代码查询银行信息 -->
+	<select id="findBankByTypeBankCode" resultMap="resultListBank" parameterType="map">
+		SELECT bank.id,bank.bank_name,bank.bank_name_abbr,bank.bank_logo from bank,bank_group where bank.id = bank_group.bank_id AND bank_group.group_type = #{type} AND bank_group.bank_code = #{bankCode}
+	</select>
+	
+	<!-- 通过参数查询银行信息列表 -->
+	<select id="findBankByParams" resultMap="resultListBank" parameterType="map">
+		SELECT bank.id,bank.bank_name,bank.bank_name_abbr,bank.bank_logo from bank where 1=1 
+		<if test="id > 0">
+			<![CDATA[
+			   AND id = #{id}
+			]]>  
+		</if>
+		<if test="bankName != null and bankName !=''">
+			<![CDATA[
+			   AND bank_name = #{bankName}
+			]]>  
+		</if>
+		<if test="bankAbbrName != null and bankAbbrName != ''">
+			<![CDATA[
+			   AND bank_name_abbr = #{bankAbbrName}
+			]]>  
+		</if>
+	</select>
+</mapper>
